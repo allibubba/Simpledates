@@ -4,7 +4,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 =====================================================
  Authur: Jackson Oates
 -----------------------------------------------------
- https://github.com/allibubba
+ https://github.com/allibubba/Simpledates
 =====================================================
  This program is freeware;
  you may use this code for any purpose, commercial or
@@ -16,46 +16,72 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
 $plugin_info = array(
-    'pi_name'           => 'Simple Dates',
+    'pi_name'           => 'Simpledates',
     'pi_version'        => '1.0',
     'pi_author'         => 'Jackson Oates',
-    'pi_description'    => 'Return formatted dates for unique situations',
+    'pi_description'    => 'Date formatting beyond EE dates',
     'pi_usage'          => Simpledates::usage()
 );
 
 class Simpledates {
 
   var $return_data;
+  var $current; 
+  var $format; 
 
   public function __construct()
   {
       $this->EE =& get_instance();
+      $this->current = $this->EE->TMPL->fetch_param('current');
+      $this->format = $this->EE->TMPL->fetch_param('format');
 
   }
 
+  // ============ Public ============ //
   public function lastdate()
   {
-    $tagdata = $this->EE->TMPL->tagdata;
-    $format = $this->EE->TMPL->fetch_param('format');
-
-    $this->return_data = date( $format );
-    
-    return $this->return_data;
+    return date($this->format, strtotime( $this->current )); 
   }
 
   public function tomorrow()
   {
-    $tagdata = $this->EE->TMPL->tagdata;
-    $format = $this->EE->TMPL->fetch_param('format');
-    $datetime = new DateTime('tomorrow');
-    $this->return_data = $datetime->format( $format );
-    return $this->return_data;
+    $time = strtotime( $this->current );
+    return date($this->format, strtotime("tomorrow", $time));
+  }
+
+  public function this_month()
+  {
+    $datetime = new DateTime();
+    return $datetime->format( $this->format );
+  }
+
+  public function next_month()
+  {
+    $time = strtotime( $this->current );
+    return date("Y-m-01", strtotime("next month", $time));
+  }
+
+  public function previous_month()
+  {
+    $time = strtotime( $this->current );
+    return date("Y-m-01", strtotime("previous month", $time));
+  }
+
+  public function segment_to_date()
+  {
+    $f = date($this->format, strtotime( $this->current )); 
+  }
+  // ============ Private ============ //
+
+  private function now ($str=null)
+  {
+    return new DateTime($str);
   }
 
 function usage()
     {
-        
-ob_start(); 
+
+ob_start();
 ?>
 Return the last day of the current month:
 {exp:simpledates:lastdate}
@@ -63,10 +89,10 @@ Return the last day of the current month:
 <?php
 $buffer = ob_get_contents();
 
-ob_end_clean(); 
+ob_end_clean();
 
 return $buffer;
-        
+
     }
 
 }
