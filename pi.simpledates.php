@@ -25,14 +25,15 @@ $plugin_info = array(
 
 class Simpledates {
 
-  static $current = new DateTime(); 
-  static $format = "%Y-%m-%d"; 
+  public $current;
+  public $format;
 
   public function __construct()
   {
       $this->EE =& get_instance();
-      $this->current = $this->EE->TMPL->fetch_param('current')
-      $this->format = $this->EE->TMPL->fetch_param('format') || $this->format;
+
+      $this->current = ee()->TMPL->fetch_param('current', new DateTime());
+      $this->format = ee()->TMPL->fetch_param('format', 'Y-m-d');
 
   }
 
