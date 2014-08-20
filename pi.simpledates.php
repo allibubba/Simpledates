@@ -71,12 +71,6 @@ class Simpledates {
   {
     $f = date($this->format, strtotime( $this->current )); 
   }
-  // ============ Private ============ //
-
-  private function now ($str=null)
-  {
-    return new DateTime($str);
-  }
 
 function usage()
     {
